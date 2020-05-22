@@ -36,7 +36,7 @@ function listarLlamada() {
   
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var hoja = activeSpreadsheet.getSheetByName("Respuestas de formulario 1");
-  var hojaGuzman = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_guzman");        Logger.log("ººhoja="+hoja);
+  var hojaGuzman = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_guzman");       
   var hojaCupa = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_cupa");
   
   
@@ -44,10 +44,10 @@ function listarLlamada() {
   
   
   var PosIterGuzman = Browser.inputBox('Proximo de Guzman - el vacio');
-  var PosIterCupa = Browser.inputBox('Proximo de Fundecupa - el vacio');                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
+  var PosIterCupa = Browser.inputBox('Proximo de Fundecupa - el vacio');                     
   var PosIni = Browser.inputBox('desde donde vamos a revisar');
   var PosFin = Browser.inputBox('hasta donde');
-                                                                                           Logger.log("ººPosIni="+PosIni);
+                                                                                           
   var adicional="";
   var opcion="";
   var url="";
@@ -58,7 +58,9 @@ function listarLlamada() {
     operador= hoja.getRange(iter, 3).getValue();
     
     
-    
+    Logger.log("operador="+operador);
+    Logger.log("url="+url);
+    Logger.log("opcion="+opcion);
     
     
     if (opcion=="Entrega de Racion"){
