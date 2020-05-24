@@ -393,10 +393,10 @@ function cambiandoNombres2() {
     var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
     var file = DriveApp.getFileById(url_ID);
     
-    var nFile = MimeType.GOOGLE_SHEETS( file.makeCopy());
+
     
-    nFile.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
-    hoja.getRange(iter, 240).setValue(nFile.getName());
+    file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+    hoja.getRange(iter, 240).setValue(file.getName());
     adicional=""
   }
   
