@@ -43,10 +43,10 @@ function listarLlamada() {
   
   
   
-  var PosIterGuzman = Browser.inputBox('Proximo de Guzman - el vacio');
-  var PosIterCupa = Browser.inputBox('Proximo de Fundecupa - el vacio');                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
-  var PosIni = Browser.inputBox('desde donde vamos a revisar');
-  var PosFin = Browser.inputBox('hasta donde');
+  var PosIterGuzman =  Number(Browser.inputBox('Proximo de Guzman - el vacio'));
+  var PosIterCupa = Number(Browser.inputBox('Proximo de Fundecupa - el vacio'));                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
+  var PosIni =Number( Browser.inputBox('desde donde vamos a revisar'));
+  var PosFin =Number( Browser.inputBox('hasta donde'));
                                                                                            Logger.log("ººPosIni="+PosIni);
   var adicional="";
   var opcion="";
@@ -59,7 +59,9 @@ function listarLlamada() {
     
     
     
-    
+    Logger.log("ººopcion="+opcion);
+    Logger.log("ººurl="+url);
+    Logger.log("ººoperador="+operador);
     
     if (opcion=="Entrega de Racion"){
       break;
@@ -105,7 +107,7 @@ function listarLlamada() {
 function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // https://docs.google.com/spreadsheets/d/
   // var url_ID = url.substring(33,200); //   "https://drive.google.com/open?id=
   var url_ID = dividiendo(url);
-  Logger.log("ººurl_ID="+url_ID);
+  Logger.log("ºexcelºurl_ID="+url_ID);
   
   var file = DriveApp.getFileById(url_ID);
   
@@ -150,6 +152,8 @@ function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // http
 }
 
 function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
+   Logger.log("ºregistroºiterMacro="+iterMacro);
+  
   var condicion =true;
   var llamada=0;
   var colOrigenLlamada =0;
