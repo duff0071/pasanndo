@@ -39,20 +39,23 @@ function listarLlamada() {
   var hojaGuzman = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_guzman");        Logger.log("ººhoja="+hoja);
   var hojaCupa = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_cupa");
   
+
+  var sheet = activeSpreadsheet.getSheets()[0];
+  
+
+  var PosIterGuzman =  Number(sheet.getRange(1, 10).getValue());  //Number(Browser.inputBox('Proximo de Guzman - el vacio'));
+  var PosIterCupa = Number(sheet.getRange(1, 11).getValue());        //Number(Browser.inputBox('Proximo de Fundecupa - el vacio'));                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
+  var PosIni =Number(sheet.getRange(1, 12).getValue());  //Number( Browser.inputBox('desde donde vamos a revisar'));
+  var PosFinLIM = Number(sheet.getRange(1, 13).getValue()); //Number( Browser.inputBox('hasta donde'));
+  var  PosFin =  PosIni+3;  
   
   
-  
-  
-  var PosIterGuzman =  Number(Browser.inputBox('Proximo de Guzman - el vacio'));
-  var PosIterCupa = Number(Browser.inputBox('Proximo de Fundecupa - el vacio'));                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
-  var PosIni =Number( Browser.inputBox('desde donde vamos a revisar'));
-  var PosFin =Number( Browser.inputBox('hasta donde'));
-                                                                                           Logger.log("ººPosIni="+PosIni);
+
   var adicional="";
   var opcion="";
   var url="";
   var operador="";
-  for(var iter =PosIni; iter<=PosFin;iter++){
+  for(var iter = PosIni; iter<=PosFin;iter++){
     opcion = hoja.getRange(iter, 7).getValue();
     url = hoja.getRange(iter, 239).getValue();
     operador= hoja.getRange(iter, 3).getValue();
@@ -91,6 +94,10 @@ function listarLlamada() {
       
     }
     
+   sheet.getRange(1, 10).setValue(PosIterGuzman);
+    sheet.getRange(1, 11).setValue(PosIterCupa);
+    sheet.getRange(1, 12).setValue(iter+1);
+    
     // var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
     // var file = DriveApp.getFileById(url_ID);
     //file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
@@ -99,6 +106,9 @@ function listarLlamada() {
     hoja.getRange(iter, 240).setValue(iter);
     
   }
+    
+
+      
   
 }
 
@@ -382,8 +392,11 @@ function cambiandoNombres2() {
     var url = hoja.getRange(iter, 239).getValue();
     var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
     var file = DriveApp.getFileById(url_ID);
-    file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
-    hoja.getRange(iter, 240).setValue(file.getName());
+    
+    var nFile = MimeType.GOOGLE_SHEETS( file.makeCopy());
+    
+    nFile.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+    hoja.getRange(iter, 240).setValue(nFile.getName());
     adicional=""
   }
   

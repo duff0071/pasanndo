@@ -49,3 +49,25 @@ function numeroDeCeldasOcupadas(){
   Logger.log(formatThousandsNoRounding(cells_count))
   Browser.msgBox("Currently using:", completeStringInMsg, Browser.Buttons.OK);
 }
+
+
+
+function runMe1() { var startTime= (new Date()).getTime(); 
+                   //do some work here 
+                   var scriptProperties = PropertiesService.getScriptProperties(); 
+                   var startRow= scriptProperties.getProperty('start_row'); 
+                   for(var ii = startRow; ii <= size; ii++) { 
+                     var currTime = (new Date()).getTime(); 
+                     if(currTime - startTime >= MAX_RUNNING_TIME) { 
+                       scriptProperties.setProperty("start_row", ii); 
+                       ScriptApp.newTrigger("runMe") .timeBased() .at(new Date(currTime+REASONABLE_TIME_TO_WAIT)) .create();
+                       break;
+                     } else 
+                     { doSomeWork(); 
+                    } 
+                   } //do some more work here 
+                  } 
+
+                   
+                   
+                   //function runMe() { var startTime= (new Date()).getTime(); //do some work here var scriptProperties = PropertiesService.getScriptProperties(); var startRow= scriptProperties.getProperty('start_row'); for(var ii = startRow; ii <= size; ii++) { var currTime = (new Date()).getTime(); if(currTime - startTime >= MAX_RUNNING_TIME) { scriptProperties.setProperty("start_row", ii); ScriptApp.newTrigger("runMe") .timeBased() .at(new Date(currTime+REASONABLE_TIME_TO_WAIT)) .create(); break; } else { doSomeWork(); } } //do some more work here } 
