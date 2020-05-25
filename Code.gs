@@ -10,6 +10,10 @@ function onOpen(e) {
               .addItem('extraer y consolidar', 'listarLlamada')
               
              )
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Navegacion')
+              .addItem(' URL xls para convertir', 'elegirCelda')
+               .addItem(' incrementar Celda', 'incrementarCelda')
+             )
   
   .addToUi();
 }
@@ -401,6 +405,36 @@ function cambiandoNombres2() {
   }
   
 }
+function cambiandoTipoDoc() {
+  
+  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var hoja = activeSpreadsheet.getSheetByName("Respuestas de formulario 1");
+  var PosIni = Browser.inputBox('desde que fila');
+  var PosFin = Browser.inputBox('hasta cual fila');
+  var adicional="";
+  var opcion="";
+  for(var iter =PosIni; iter<=PosFin;iter++){
+    opcion = hoja.getRange(iter, 7).getValue();
+    if (opcion=="Con un archivo de EXCEL"){
+
+    
+    var url = hoja.getRange(iter, 239).getValue();
+    var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
+    var file = DriveApp.getFileById(url_ID);
+    
+
+    
+    file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+    hoja.getRange(iter, 240).setValue(file.getName());
+    adicional=""
+    
+    
+    
+    }
+  }
+  
+}
+
 
 
 
@@ -453,7 +487,38 @@ function dividiendo(dato){//"https://drive.google.com/open?id="
   return sheet.getRange("g1").getValue();
 }
 
+function elegirCelda(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheets()[0];
+  var Poscelda = Number(sheet.getRange(1, 14).getValue());
+  
+  
+  var sheetFormu = ss.getSheets()[1];
+  sheetFormu.activate();
+  sheetFormu.setActiveRange(sheetFormu.getRange(Poscelda, 239));
+  
+
+
+  
+  
+}
+function incrementarCelda(){
+  
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheets()[0];
+  var Poscelda = Number(sheet.getRange(1, 14).getValue());
+  
+  Poscelda++;
+  sheet.getRange(1, 14).setValue(Poscelda);
+  
+ 
+
+  
+  
+}
 
 
 
+ 
 
