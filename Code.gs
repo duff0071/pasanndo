@@ -481,10 +481,12 @@ function dividiendo(dato){//"https://drive.google.com/open?id="
   var sheet = ss.getSheets()[0];
   
   
-  var cell = sheet.getRange("e1");
+  var cell = sheet.getRange("f1");
+  var cell2 = sheet.getRange("c1");
   cell.setValue( dato);
+  cell2.setValue( dato);
   
-  return sheet.getRange("g1").getValue();
+  return sheet.getRange("o1").getValue();
 }
 
 function elegirCelda(){
@@ -497,7 +499,6 @@ function elegirCelda(){
   sheetFormu.activate();
   sheetFormu.setActiveRange(sheetFormu.getRange(Poscelda, 239));
   
-
 
   
   
