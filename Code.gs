@@ -10,9 +10,9 @@ function onOpen(e) {
               .addItem('extraer y consolidar', 'listarLlamada')
               
              )
-    .addSubMenu(SpreadsheetApp.getUi().createMenu('Navegacion')
+  .addSubMenu(SpreadsheetApp.getUi().createMenu('Navegacion')
               .addItem(' URL xls para convertir', 'elegirCelda')
-               .addItem(' incrementar Celda', 'incrementarCelda')
+              .addItem(' incrementar Celda', 'incrementarCelda')
              )
   
   .addToUi();
@@ -37,27 +37,27 @@ function cambiandoNombres() {
 }
 
 function listarLlamada() {
- 
+  
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var hoja = activeSpreadsheet.getSheetByName("Respuestas de formulario 1");
   var hojaGuzman = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_guzman");        Logger.log("ººhoja="+hoja);
   var hojaCupa = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_cupa");
   
-
+  
   var sheet = activeSpreadsheet.getSheets()[0];
   
-
+  
   var PosIterGuzman =  Number(sheet.getRange(1, 10).getValue());  //Number(Browser.inputBox('Proximo de Guzman - el vacio'));
   var PosIterCupa = Number(sheet.getRange(1, 11).getValue());        //Number(Browser.inputBox('Proximo de Fundecupa - el vacio'));                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
   var PosIni =Number(sheet.getRange(1, 12).getValue());  //Number( Browser.inputBox('desde donde vamos a revisar'));
   var PosFinLIM = Number(sheet.getRange(1, 13).getValue()); //Number( Browser.inputBox('hasta donde'));
-  var  PosFin =  PosIni+1;  
+  var  PosFin =  PosIni;  
   
   if(PosIni > PosFinLIM){
     
     Browser.msgBox("Error");
   }
-
+  
   var adicional="";
   var opcion="";
   var url="";
@@ -66,7 +66,7 @@ function listarLlamada() {
     opcion = hoja.getRange(iter, 7).getValue();
     url = hoja.getRange(iter, 240).getValue();
     operador= hoja.getRange(iter, 3).getValue();
-  Logger.log("fila ="+iter);  
+    Logger.log("fila ="+iter);  
     
     
     Logger.log("ººopcion="+opcion);
@@ -102,18 +102,18 @@ function listarLlamada() {
       
     }
     
-   sheet.getRange(1, 10).setValue(PosIterGuzman);
+    sheet.getRange(1, 10).setValue(PosIterGuzman);
     sheet.getRange(1, 11).setValue(PosIterCupa);
     sheet.getRange(1, 12).setValue(iter+1);
     
-
+    
     
     //hoja.getRange(iter, 241).setValue(iter);
     
   }
-    
-
-      
+  
+  
+  
   
 }
 
@@ -137,25 +137,36 @@ function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // http
     Browser.msgBox("se complico, el arhivo Origen")
   }
   var iter =12;
+  
+  var dtGeneral =[];
+  var d  =[];
+  
+  
+  d.push(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
+  d.push(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
+  d.push(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds sea cual fuere el operador
+  
+  dtGeneral.push(d);
+  
+  
+  
+  
+  
+  var ind =1;
   for(iter=12;iter<=22;iter++){
     if(hojaOrigen.getRange(iter,3).getValue() != ""){
       Logger.log("registrando");
-      hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-      hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-      hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
       
-      for(var carrier=9;carrier<=37;carrier++){
+      if(hojaOrigen.getRange(iter, 3).getValue() != ""){
+        hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea   
         
-        if(carrier ==11 || carrier ==37){
-          hojaDes.getRange(PosRegistro,carrier).setValue(nombrePropio(hojaOrigen.getRange(iter,carrier-8).getValue()));
-        }
-        else{
-          hojaDes.getRange(PosRegistro,carrier).setValue(hojaOrigen.getRange(iter,carrier-8).getValue());
-        }
+        var  infoCall =   hojaOrigen.getRange(iter, 1,1, 30).getValues();
+        hojaDes.getRange(PosRegistro, 9).setValue(ind);
+        hojaDes.getRange(PosRegistro, 10,1,30).setValues(infoCall);
+        ind++;
+        PosRegistro ++;
         
       }
-      
-      PosRegistro ++;
     }
     
   }
@@ -169,45 +180,59 @@ function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // http
 }
 
 function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
-   Logger.log("ºregistroºiterMacro="+iterMacro);
-
-  
-   // iterMacro=667;
-  //PosRegistro=1200;
-  //hojaForm=SpreadsheetApp.getActive().getSheetByName("Respuestas de formulario 1");
-  //hojaDes=SpreadsheetApp.getActive().getSheetByName("ListadoLLAMADAS_cupa");
+  Logger.log("ºregistroºiterMacro="+iterMacro);
   
   
-
-  var condicion =true;
+  //   iterMacro=770;
+  //PosRegistro=2356;
+  //  hojaForm=SpreadsheetApp.getActive().getSheetByName("Respuestas de formulario 1");
+  //hojaDes=SpreadsheetApp.getActive().getSheetByName("ListadoLLAMADAS_cupa");    //1131
+  //  hojaDes=SpreadsheetApp.getActive().getSheetByName("ListadoLLAMADAS_guzman");//2356
+  
+  
+  var condicion =false;//true;
   var llamada=0;
   var colOrigenLlamada =0;
   var colDestinoLlamada =0;
-                                                       Logger.log("hojaDes="+hojaDes);
+  Logger.log("hojaDes="+hojaDes);
   
   do{
     
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds sea cual fuere el operador
-      Logger.log("registrando");
+    
+    var dtGeneral =[];
+    var d  =[];
+    
+    
+    d.push(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
+    d.push(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
+    d.push(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds sea cual fuere el operador
+    
+    dtGeneral.push(d);
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
+    
+    
+    Logger.log("call1");
     llamada=1; //llamada 1
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
     colOrigenLlamada=30;
     colDestinoLlamada =10;
-  
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 208).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 209).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio( hojaForm.getRange(iterMacro, 229).getValue()));
+    
+    
+    var infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    var infoAcu =[];
+    var dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
+    
+    
+    
     PosRegistro++; //fin llamada 1
     
     //llamada 2
@@ -218,23 +243,22 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 211).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 212).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 210).getValue()));
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    
+    infoAcu =[];
+    dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
+    
     PosRegistro++; //fin llamada 2
     
     //llamada 3
@@ -245,22 +269,24 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 213).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 214).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 215).getValue()));
+    
+    
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    
+    infoAcu =[];
+    dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
+    
     PosRegistro++; //fin llamada 3
     
     //llamada 4
@@ -271,22 +297,22 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 216).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 217).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 218).getValue()));
+    
+    
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    var infoAcu =[];
+    var dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
     PosRegistro++; //fin llamada 4
     
     //llamada 5
@@ -297,22 +323,22 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 219).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 220).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 221).getValue()));
+    
+    
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    var infoAcu =[];
+    var dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
     PosRegistro++; //fin llamada 5
     
     //llamada 6
@@ -323,22 +349,22 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 222).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 223).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 225).getValue()));
+    
+    
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    var infoAcu =[];
+    var dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
     PosRegistro++; //fin llamada 6
     
     //llamada 7
@@ -349,22 +375,22 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
       condicion =false;
       break;
     }
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
+    
+    hojaDes.getRange(PosRegistro, 1,1,3).setValues(dtGeneral);//////esta es la buena linea
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
-    for(var carrier=0;carrier<=24;carrier++){
-      if(carrier==1){
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue());
-      }
-    }
-    hojaDes.getRange(PosRegistro,35).setValue(hojaForm.getRange(iterMacro, 226).getValue());
-    hojaDes.getRange(PosRegistro,36).setValue(hojaForm.getRange(iterMacro, 227).getValue());
-    hojaDes.getRange(PosRegistro,37).setValue(nombrePropio(hojaForm.getRange(iterMacro, 228).getValue()));
+    
+    
+    infoCall =   hojaForm.getRange(iterMacro, colOrigenLlamada,1, 25).getValues();
+    hojaDes.getRange(PosRegistro, colDestinoLlamada,1,25).setValues(infoCall);
+    
+    var infoAcu =[];
+    var dtAcu  =[];
+    dtAcu.push(hojaForm.getRange(iterMacro, 208).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 209).getValue());
+    dtAcu.push(hojaForm.getRange(iterMacro, 229).getValue());
+    infoAcu.push(dtAcu);
+    hojaDes.getRange(PosRegistro, 35,1,3).setValues(infoAcu);
     PosRegistro++; //fin llamada 7
     
     
@@ -409,7 +435,7 @@ function cambiandoNombres2() {
     var url_ID = extraerID_url(url);                 //---.substring(33,200);    //   "https://drive.google.com/open?id=);
     var file = DriveApp.getFileById(url_ID);
     
-
+    
     
     file.setName(hoja.getRange(iter, 239).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
     hoja.getRange(iter, 241).setValue(file.getName());
@@ -429,20 +455,20 @@ function cambiandoTipoDoc() {
   for(var iter =PosIni; iter<=PosFin;iter++){
     opcion = hoja.getRange(iter, 7).getValue();
     if (opcion=="Con un archivo de EXCEL"){
-
-    
-    var url = hoja.getRange(iter, 239).getValue();
-    var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
-    var file = DriveApp.getFileById(url_ID);
-    
-
-    
-    file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
-    hoja.getRange(iter, 240).setValue(file.getName());
-    adicional=""
-    
-    
-    
+      
+      
+      var url = hoja.getRange(iter, 239).getValue();
+      var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
+      var file = DriveApp.getFileById(url_ID);
+      
+      
+      
+      file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+      hoja.getRange(iter, 240).setValue(file.getName());
+      adicional=""
+      
+      
+      
     }
   }
   
@@ -489,12 +515,12 @@ function nombrePropio(name){
 
 
 /**
- * EXTRAE ID DE UNA URL
- * Aprovecha  unas celdas de la primera hoja para hacer un split 
- *   //"https://drive.google.com/open?id="
- * @param {String} Url del archivo; Required
- * @return {String} Numero Id de la Url leida de la celda O1 primera hoja 
- **/
+* EXTRAE ID DE UNA URL
+* Aprovecha  unas celdas de la primera hoja para hacer un split 
+*   //"https://drive.google.com/open?id="
+* @param {String} Url del archivo; Required
+* @return {String} Numero Id de la Url leida de la celda O1 primera hoja 
+**/
 function dividiendo(dato){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
@@ -519,13 +545,13 @@ function elegirCelda(){
   sheetFormu.activate();
   sheetFormu.setActiveRange(sheetFormu.getRange(Poscelda, 239));
   
-
+  
   
   
 }
 function incrementarCelda(){
   
-
+  
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
   var Poscelda = Number(sheet.getRange(1, 14).getValue());
@@ -533,13 +559,13 @@ function incrementarCelda(){
   Poscelda++;
   sheet.getRange(1, 14).setValue(Poscelda);
   
- 
-
+  
+  
   
   
 }
 
 
 
- 
+
 
