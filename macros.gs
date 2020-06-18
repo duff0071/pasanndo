@@ -16,3 +16,11 @@ var d="https://docs.google.com/spreadsheets/d/1DpCXk-D5FHB5Zjx-9l_mUMU4NzYP4cM-9
       var file = DriveApp.getFileById(url_id);
   Browser.msgBox(file.getName());
 }
+
+
+function test1(){
+
+
+  Browser.msgBox(NOMPROPIO("era mas facil de lo evidente"));
+
+}

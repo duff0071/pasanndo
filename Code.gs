@@ -37,7 +37,7 @@ function cambiandoNombres() {
 }
 
 function listarLlamada() {
-  
+ 
   var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var hoja = activeSpreadsheet.getSheetByName("Respuestas de formulario 1");
   var hojaGuzman = activeSpreadsheet.getSheetByName("ListadoLLAMADAS_guzman");        Logger.log("ººhoja="+hoja);
@@ -51,9 +51,12 @@ function listarLlamada() {
   var PosIterCupa = Number(sheet.getRange(1, 11).getValue());        //Number(Browser.inputBox('Proximo de Fundecupa - el vacio'));                     Logger.log("ººPosIterGuzman="+PosIterGuzman);
   var PosIni =Number(sheet.getRange(1, 12).getValue());  //Number( Browser.inputBox('desde donde vamos a revisar'));
   var PosFinLIM = Number(sheet.getRange(1, 13).getValue()); //Number( Browser.inputBox('hasta donde'));
-  var  PosFin =  PosIni+3;  
+  var  PosFin =  PosIni+1;  
   
-  
+  if(PosIni > PosFinLIM){
+    
+    Browser.msgBox("Error");
+  }
 
   var adicional="";
   var opcion="";
@@ -61,9 +64,9 @@ function listarLlamada() {
   var operador="";
   for(var iter = PosIni; iter<=PosFin;iter++){
     opcion = hoja.getRange(iter, 7).getValue();
-    url = hoja.getRange(iter, 239).getValue();
+    url = hoja.getRange(iter, 240).getValue();
     operador= hoja.getRange(iter, 3).getValue();
-    
+  Logger.log("fila ="+iter);  
     
     
     Logger.log("ººopcion="+opcion);
@@ -71,10 +74,10 @@ function listarLlamada() {
     Logger.log("ººoperador="+operador);
     
     if (opcion=="Entrega de Racion"){
-      break;
+      continue;
     }
     if (opcion=="Avance de planeacion"){
-      break;
+      continue;
     }
     if (opcion=="Con un archivo de EXCEL"){
       if(operador=="FUN. Cuenca del Pacifico"){
@@ -85,15 +88,16 @@ function listarLlamada() {
         PosIterGuzman =listarDesdeExcel(hojaGuzman,PosIterGuzman,url,hoja,iter);
         
       }
+      hoja.getRange(iter, 241).setValue(iter);
     }
     if (opcion=="Con una foto al formato impreso"){
       if(operador=="FUN. Cuenca del Pacifico"){
         PosIterCupa =listarDesdeImpreso(hoja,iter,hojaCupa,PosIterCupa);
-        
+        hoja.getRange(iter, 241).setValue(iter);
       }
       else{
         PosIterGuzman =listarDesdeImpreso(hoja,iter,hojaGuzman,PosIterGuzman);
-        
+        hoja.getRange(iter, 241).setValue(iter);
       }
       
     }
@@ -102,12 +106,9 @@ function listarLlamada() {
     sheet.getRange(1, 11).setValue(PosIterCupa);
     sheet.getRange(1, 12).setValue(iter+1);
     
-    // var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
-    // var file = DriveApp.getFileById(url_ID);
-    //file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+
     
-    
-    hoja.getRange(iter, 240).setValue(iter);
+    //hoja.getRange(iter, 241).setValue(iter);
     
   }
     
@@ -120,10 +121,11 @@ function listarLlamada() {
 
 function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // https://docs.google.com/spreadsheets/d/
   // var url_ID = url.substring(33,200); //   "https://drive.google.com/open?id=
-  var url_ID = dividiendo(url);
+  var url_ID = extraerID_url(url);
   Logger.log("ºexcelºurl_ID="+url_ID);
   
   var file = DriveApp.getFileById(url_ID);
+  
   
   
   var hojaOrigen = SpreadsheetApp.openById(url_ID).getSheetByName("FORMATO");
@@ -135,27 +137,28 @@ function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // http
     Browser.msgBox("se complico, el arhivo Origen")
   }
   var iter =12;
-  do{
-    
-    hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
-    hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
-    
-    for(var carrier=9;carrier<=37;carrier++){
+  for(iter=12;iter<=22;iter++){
+    if(hojaOrigen.getRange(iter,3).getValue() != ""){
+      Logger.log("registrando");
+      hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
+      hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
+      hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
       
-      if(carrier ==11 || carrier ==37){
-        hojaDes.getRange(PosRegistro,carrier).setValue(nombrePropio(hojaOrigen.getRange(iter,carrier-8).getValue()));
-      }
-      else{
-        hojaDes.getRange(PosRegistro,carrier).setValue(hojaOrigen.getRange(iter,carrier-8).getValue());
+      for(var carrier=9;carrier<=37;carrier++){
+        
+        if(carrier ==11 || carrier ==37){
+          hojaDes.getRange(PosRegistro,carrier).setValue(nombrePropio(hojaOrigen.getRange(iter,carrier-8).getValue()));
+        }
+        else{
+          hojaDes.getRange(PosRegistro,carrier).setValue(hojaOrigen.getRange(iter,carrier-8).getValue());
+        }
+        
       }
       
+      PosRegistro ++;
     }
     
-    PosRegistro ++;
-    iter++;
-    
-  }while (hojaOrigen.getRange(iter,3).getValue() != "");
+  }
   
   
   return PosRegistro; // devolverl la proxima posicion vacia del listado
@@ -167,7 +170,15 @@ function listarDesdeExcel(hojaDes,PosRegistro,url, hojaForm, iterMacro){ // http
 
 function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
    Logger.log("ºregistroºiterMacro="+iterMacro);
+
   
+   // iterMacro=667;
+  //PosRegistro=1200;
+  //hojaForm=SpreadsheetApp.getActive().getSheetByName("Respuestas de formulario 1");
+  //hojaDes=SpreadsheetApp.getActive().getSheetByName("ListadoLLAMADAS_cupa");
+  
+  
+
   var condicion =true;
   var llamada=0;
   var colOrigenLlamada =0;
@@ -175,16 +186,17 @@ function listarDesdeImpreso(hojaForm,iterMacro,hojaDes,PosRegistro){
                                                        Logger.log("hojaDes="+hojaDes);
   
   do{
+    
     hojaDes.getRange(PosRegistro,1).setValue(hojaForm.getRange(iterMacro, 1).getValue()); //trae la fecha registro google
     hojaDes.getRange(PosRegistro,2).setValue(hojaForm.getRange(iterMacro, 6).getValue());//trae la fecha del formato
-    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds
-    
+    hojaDes.getRange(PosRegistro,3).setValue(hojaForm.getRange(iterMacro, 4).getValue()+hojaForm.getRange(iterMacro, 5).getValue());//trae la uds sea cual fuere el operador
+      Logger.log("registrando");
     llamada=1; //llamada 1
     hojaDes.getRange(PosRegistro,9).setValue(llamada);
     
     colOrigenLlamada=30;
     colDestinoLlamada =10;
-    
+  
     for(var carrier=0;carrier<=24;carrier++){
       if(carrier==1){
         hojaDes.getRange(PosRegistro,carrier+colDestinoLlamada).setValue(nombrePropio(hojaForm.getRange(iterMacro,carrier+colOrigenLlamada).getValue()));
@@ -393,14 +405,15 @@ function cambiandoNombres2() {
       adicional ="_planeacion"
     }
     
-    var url = hoja.getRange(iter, 239).getValue();
-    var url_ID = url.substring(33,200);    //   "https://drive.google.com/open?id=);
+    var url = hoja.getRange(iter, 240).getValue();
+    var url_ID = extraerID_url(url);                 //---.substring(33,200);    //   "https://drive.google.com/open?id=);
     var file = DriveApp.getFileById(url_ID);
     
 
     
-    file.setName(hoja.getRange(iter, 238).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
-    hoja.getRange(iter, 240).setValue(file.getName());
+    file.setName(hoja.getRange(iter, 239).getValue()+adicional); //file.setName("2020-05-05__1957300078743_Los_Muñequitos_FLORIANA_MARITZA_ASPRILLA_ARBOLEDA")
+    hoja.getRange(iter, 241).setValue(file.getName());
+    hoja.getRange(iter, 242).setValue(file.getName());
     adicional=""
   }
   
@@ -475,8 +488,14 @@ function nombrePropio(name){
 }
 
 
-
-function dividiendo(dato){//"https://drive.google.com/open?id="
+/**
+ * EXTRAE ID DE UNA URL
+ * Aprovecha  unas celdas de la primera hoja para hacer un split 
+ *   //"https://drive.google.com/open?id="
+ * @param {String} Url del archivo; Required
+ * @return {String} Numero Id de la Url leida de la celda O1 primera hoja 
+ **/
+function dividiendo(dato){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
   
@@ -490,6 +509,7 @@ function dividiendo(dato){//"https://drive.google.com/open?id="
 }
 
 function elegirCelda(){
+  
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheets()[0];
   var Poscelda = Number(sheet.getRange(1, 14).getValue());
